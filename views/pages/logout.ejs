@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+    <div >
+        <h1>
+            Hasta luego, <%=nombre%>!
+        </h1>
+    </div>
+    <script>
+        // codigo magico para mostrar 2 segundos el "hasta luego" y redirije al /
+        setTimeout(() => {
+            location.href = '/'
+        }, 2000)
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "DesafioClase23",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matiscava/DesafioClase23.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matiscava/DesafioClase23/issues"
+  },
+  "homepage": "https://github.com/matiscava/DesafioClase23#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "mongoose": "^6.0.14",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7"
+  }
+}
