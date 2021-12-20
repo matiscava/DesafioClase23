@@ -8,19 +8,20 @@
 </head>
 
 <body>
-    <div >
+    <h1>Login de Usuario</h1>
+    <br>
+    <form action="/login" method="post" autocomplete="off">
         <div >
-            <h1>Login de Usuario</h1>
-            <br>
-            <form action="/login" method="post" autocomplete="off">
-                <div >
-                    <label for="nombre">Ingrese su nombre</label>
-                    <input id="nombre" type="text" name="nombre" required>
-                </div>
-                <button>Enviar</button>
-            </form>
+            <label for="nombre">Ingrese su nombre</label>
+            <input id="nombre" type="text" name="nombre" required>
+            <label for="password">Ingrese su password</label>
+            <input id="password" type="password" name="password" required>
         </div>
-    </div>
+        <button>Enviar</button>
+    </form>
+    <button onclick="location.href='/signup'">
+        Registrarse
+    </button>
 </body>
 
 </html>

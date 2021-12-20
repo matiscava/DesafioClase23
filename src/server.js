@@ -1,10 +1,12 @@
 const express = require('express');
 const session = require('express-session');
-const {userDao} = require('./daos')
+const path = require('path');
+const bCrypt = require('bcrypt');
 
+const {userDao} = require('./daos')
 const users = new userDao;
 
-const path = require('path');
+const { redirect } = require('express/lib/response');
 const app = express();
 
 app.use(express.json());
@@ -21,6 +23,20 @@ app.use(session({
     }
 }))
 
+
+/* FUNCIONES */
+function createHash(password) {
+    return bCrypt.hashSync(
+        password,
+        bCrypt.genSaltSync(10),
+        null
+    );
+}
+function isValidPassword( user , password ) {
+    return bCrypt.compareSync( password , user.password )
+}
+
+
 app.get( '/' , ( req , res ) => {
     res.redirect('/home');
 })
@@ -28,18 +44,17 @@ app.get( '/' , ( req , res ) => {
 app.get('/home', async ( req , res ) => {
     const idMongo = req.session && req.session.idMongo;
     const usuario = await users.getById(idMongo);
-    // let nombre = req.session && req.session.nombre;
-    // if (nombre===undefined) nombre=false;
-    // res.render('./../views/pages/home.ejs', {nombre: nombre})
-    res.render(path.join(process.cwd(), '/views/pages/home.ejs'), {nombre: usuario})
+
+    res.render(path.join(process.cwd(), '/views/pages/home.ejs'), {usuario: usuario})
 
     // res.send('probando')
 })
-
+//Login
 app.get( '/login' , async ( req , res ) => {
 
     const idMongo = req.session && req.session.idMongo;
     const usuario = await users.getById(idMongo);
+
 
     if (usuario) {
         res.redirect('/')
@@ -48,6 +63,26 @@ app.get( '/login' , async ( req , res ) => {
         res.render(path.join(process.cwd(), '/views/pages/login.ejs'))
     }
 })
+app.post( '/login' , async ( req , res ) => {
+    const { username , password } = req.body;
+    const user = await users.findUser(username);
+    if ( !user )
+    {
+        console.log('User Not Found with username ',username);
+        let problema = 'user error login: User not found';
+        res.render(path.join(process.cwd(), '/views/pages/error.ejs'),{problema: problema, link: '/login'})
+    }
+    if ( !isValidPassword( user , password ) ) {
+        console.log( 'Invalid Password' );
+        let problema = 'user error login: invalid password';
+        res.render(path.join(process.cwd(), '/views/pages/error.ejs'),{problema: problema, link: '/login'})
+    }
+    req.session.idMongo = user._id;
+
+    res.redirect('/home');
+
+})
+//logout
 app.get('/logout', async ( req , res ) => {
     const idMongo = req.session && req.session.idMongo;
     const usuario = await users.getById(idMongo);
@@ -55,7 +90,6 @@ app.get('/logout', async ( req , res ) => {
     if (usuario) {
         req.session.destroy(error => {
             if (!error) {
-                users.deleteById(idMongo)
                 res.render(path.join(process.cwd(), '/views/pages/logout.ejs'), { nombre: usuario})
             } else {
                 res.redirect('/')
@@ -66,12 +100,40 @@ app.get('/logout', async ( req , res ) => {
     }
 })
 
-app.post( '/login' , async ( req , res ) => {
-    const userName = req.body.nombre;
-    const idUser = await users.createUser(userName)
-    req.session.idMongo = idUser;
-    res.redirect('/home');
 
+//signup
+
+app.get( '/signup' , async ( req , res ) => {
+
+    const idMongo = req.session && req.session.idMongo;
+    const usuario = await users.getById(idMongo);
+
+    if (usuario) {
+        res.redirect('/')
+    } else {
+        // res.render('./../views/pages/login.ejs')
+        res.render(path.join(process.cwd(), '/views/pages/signup.ejs'))
+    }
+})
+app.post( '/signup' , async ( req , res ) => {
+    const { username , password , email } = req.body;
+    const oldUser = await users.findUser(username);
+    if (oldUser)
+    {
+        console.log('User already exists');
+        let problema = 'user error signup: user already exists';
+        res.render(path.join(process.cwd(), '/views/pages/error.ejs'),{problema: problema, link: '/signup'})
+    }else{
+        const newUser = {
+            username: username,
+            password: createHash(password),
+            email: email
+        }
+        const idUser = await users.createUser(newUser)
+        console.log('User register succesful iD ',idUser);
+        req.session.idMongo = idUser;
+        res.redirect('/home');
+    }
 })
 
 const PORT = process.env.port || 8050;

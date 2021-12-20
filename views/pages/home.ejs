@@ -10,9 +10,9 @@
 
 <body>
     <div>
-        <% if (nombre){%>
+        <% if (usuario){%>
         <h1>
-            Bienvenide, <%= nombre %>
+            Bienvenide, <%= usuario.email %>
                 <button onclick="location.href='/logout'">
                     Desloguear
                 </button>
@@ -21,7 +21,11 @@
         <h1> Usted no se ha logueado </h1>
 
             <button onclick="location.href='/login'">
-                loguearse
+                Loguearse
+            </button>
+            
+            <button onclick="location.href='/signup'">
+                Registrarse
             </button>
         <%}%>
         

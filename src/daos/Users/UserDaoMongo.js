@@ -5,8 +5,10 @@ const MongoContainer = require("../../containers/MongoContainer");
 class UserDaoMongo extends MongoContainer {
   constructor() {
     super('users', new Schema({
-        nombre: {type: String, required:true}
-    }))
+        username: {type: String, required:true},
+        email: {type: String, required:true},
+        password: {type: String, required:true}
+      }))
   }
 };
 

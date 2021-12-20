@@ -13,9 +13,10 @@ class MongoContainer {
       this.conexion = await mongoose.connect(options.mongodb.host, options.mongodb.options);
     }
   }
-  async createUser (nombre) {
+  async createUser (user) {
       try{
-          const document = await new this.collection({nombre: nombre});
+        console.log(user);
+        const document = await new this.collection(user);
         const response = await document.save()
         console.log('Cliente creado', {response});
         return document._id;
@@ -23,13 +24,19 @@ class MongoContainer {
           console.error('Error: ', error);
       }
   }
+  async findUser (userName) {
+    try{
+      const user = await this.collection.findOne({username: userName}, {__v: 0});
+      return user;
+    }catch(err){console.error(`Error: ${err}`)}
+  }
   async getById (id) {
     try{
         const documents = await this.collection.find({ _id: id },{__v:0});
         if ( documents.length === 0 || documents===undefined) {
             return false;
         } else {
-            return documents[0].nombre;
+            return documents[0];
         }
       } catch (error) {
           console.error('Error: ', error);
