@@ -1,7 +1,9 @@
-const UserDaoMongo = require('./Users/UserDaoMongo')
+const ProductsDaoMongo = require('./Products/ProductsDaoMongo');
+const UsersDaoMongo = require('./Users/UserDaoMongo')
 
 const daos= {};
-daos['userDao'] = UserDaoMongo;
+daos['usersDao'] = UsersDaoMongo;
+daos['productsDao'] = ProductsDaoMongo;
 
 module.exports = daos;
 

@@ -2,7 +2,7 @@ const { Schema } = require('mongoose');
 
 const MongoContainer = require("../../containers/MongoContainer");
 
-class UserDaoMongo extends MongoContainer {
+class UsersDaoMongo extends MongoContainer {
   constructor() {
     super('users', new Schema({
         username: {type: String, required:true},
@@ -12,4 +12,4 @@ class UserDaoMongo extends MongoContainer {
   }
 };
 
-module.exports = UserDaoMongo;
+module.exports = UsersDaoMongo;

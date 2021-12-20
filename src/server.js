@@ -5,8 +5,11 @@ const bCrypt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-const {userDao} = require('./daos')
-const users = new userDao;
+const {usersDao} = require('./daos')
+const {productsDao} = require('./daos')
+
+const Products = new productsDao;
+const Users = new usersDao;
 
 const { redirect } = require('express/lib/response');
 const req = require('express/lib/request');
@@ -47,7 +50,7 @@ function isValidPassword( user , password ) {
 
 passport.use('login',  new LocalStrategy(
     async (username , password , done ) => {
-        const user = await users.findUser(username);
+        const user = await Users.findUser(username);
         if (!user) {
             console.log('User Not Found with username ',username);
             return done ( null , false )
@@ -68,8 +71,7 @@ passport.use('signup', new LocalStrategy(
         passReqToCallback: true
     },
     async (req , username , email , done ) => {
-        const user = await users.findUser(username);
-        console.log('prueba en passport', user);
+        const user = await Users.findUser(username);
         if (user) {
             console.log('User already exists');
             return done( null , false )
@@ -80,7 +82,7 @@ passport.use('signup', new LocalStrategy(
             email: req.body.email
         }
 
-        const idUser = await users.createUser(newUser)
+        const idUser = await Users.createUser(newUser)
         console.log('User register succesful iD ',idUser);
         req.session.idMongo = idUser;
         // res.redirect('/home');
@@ -88,16 +90,14 @@ passport.use('signup', new LocalStrategy(
     }
 ) )
 
+
 passport.serializeUser( ( user , done) => {
-    console.log('prueba serialize user',user._id);
     done( null , user._id);
 } )
 passport.deserializeUser( async ( id , done ) => {
-    console.log('prueba deserialize user',id);
 
-        const user = await users.getById(id)
+        const user = await Users.getById(id)
         // req.session.idMongo = user._id;
-        console.log('probando deserialize', user._id);
         return done( null , user._id)
         // if (user) {
         //     done()
@@ -116,12 +116,36 @@ app.get( '/' , ( req , res ) => {
 
 app.get('/home', async ( req , res ) => {
     const idMongo = req.session && req.session.idMongo;
-    const usuario = await users.getById(idMongo);
-    
-    console.log('probando usuario', usuario);
-    res.render(path.join(process.cwd(), '/views/pages/home.ejs'), {usuario: usuario})
+    console.log('prueba',idMongo);
+    const usuario = await Users.getById(idMongo);
+    const productsList = await Products.getAll();
+
+    if(usuario) req.session.idMongo = usuario._id;
+    res.render(path.join(process.cwd(), '/views/pages/home.ejs'), {usuario: usuario, productsList: productsList})
 
 })
+app.post( '/home', async( req , res ) => {
+    const idMongo = req.session && req.session.idMongo;
+
+    const user = req.user;
+
+    console.log('prueba post',idMongo);
+    console.log('prueba post dos',user);
+
+    const newProduct = req.body;
+    const productId = await Products.createProduct(newProduct)
+    console.log(productId);
+    const message = {
+        message: 'Se ha cargado un nuevo producto',
+        data: productId
+    };
+    console.log(message);
+    // req.session.idMongo = 
+    res.redirect('/')
+
+
+})
+
 //Login
 app.get( '/login' , async ( req , res ) => {
     if (req.isAuthenticated()) {
@@ -129,7 +153,7 @@ app.get( '/login' , async ( req , res ) => {
     }else{
 
         const idMongo = req.session && req.session.idMongo;
-        const usuario = await users.getById(idMongo);
+        const usuario = await Users.getById(idMongo);
 
 
         if (usuario) {
@@ -143,7 +167,7 @@ app.get( '/login' , async ( req , res ) => {
 })
 app.post( '/login' , passport.authenticate('login', {failureRedirect : '/faillogin' }) , async ( req , res ) => {
     const { username , password } = req.body;
-    const user = await users.findUser(username);
+    const user = await Users.findUser(username);
     // if ( !user )
     // {
     //     console.log('User Not Found with username ',username);
@@ -166,7 +190,7 @@ app.get( '/faillogin' , (req , res) => {
 //logout
 app.get('/logout', async ( req , res ) => {
     const idMongo = req.session && req.session.idMongo;
-    const usuario = await users.getById(idMongo);
+    const usuario = await Users.getById(idMongo);
 
     if (usuario) {
         req.session.destroy(error => {
@@ -187,7 +211,7 @@ app.get('/logout', async ( req , res ) => {
 app.get( '/signup' , async ( req , res ) => {
 
     // const idMongo = req.session && req.session.idMongo;
-    // const usuario = await users.getById(idMongo);
+    // const usuario = await Users.getById(idMongo);
 
     // if (usuario) {
     //     res.redirect('/')
@@ -198,7 +222,7 @@ app.get( '/signup' , async ( req , res ) => {
 })
 app.post( '/signup' , passport.authenticate( 'signup' , {failureRedirect: '/failsignup'} ) , async ( req , res ) => {
     // const { username , password , email } = req.body;
-    // const oldUser = await users.findUser(username);
+    // const oldUser = await Users.findUser(username);
     // if (oldUser)
     // {
     //     console.log('User already exists');
@@ -210,7 +234,7 @@ app.post( '/signup' , passport.authenticate( 'signup' , {failureRedirect: '/fail
     //         password: createHash(password),
     //         email: email
     //     }
-    //     const idUser = await users.createUser(newUser)
+    //     const idUser = await Users.createUser(newUser)
     //     console.log('User register succesful iD ',idUser);
     //     req.session.idMongo = idUser;
     //     res.redirect('/home');

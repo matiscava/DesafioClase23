@@ -10,16 +10,7 @@
 
 <body>
     <div class="userContainer">
-        <% if (usuario){%>
-            <div class="logContainer">
-                <h1>
-                    Bienvenide, <%= usuario.email %>
-                        <button class="btnHome" onclick="location.href='/logout'">
-                            Desloguear
-                        </button>
-                </h1>
-            </div>  
-        <%} else {%>
+        <% if (!usuario){%>
             <div class="unlogContainer">
                 <h1> Usted no se ha logueado </h1>
                 <div class="btnContainer">
@@ -32,12 +23,67 @@
                     </button>
                 </div>
             </div>
+        <%} else {%>
+            <div class="logContainer">
+                <h1>
+                    Bienvenide, <%= usuario.email %>
+                        <button class="btnHome" onclick="location.href='/logout'">
+                            Desloguear
+                        </button>
+                </h1>
+            </div>  
+            <form action="/home" method="post" autocomplete="off">
+                <div >
+                    <label class="formLabel" for="title">Ingrese el nombre del producto: <input id="title" type="text" name="title" onchange="habilitarBtn()" required></label>
+                    <label class="formLabel" for="description">Ingrese la descripción del producto: <input id="description" type="text" name="description" onchange="habilitarBtn()" required></label>
+                    <label class="formLabel" for="stock">Ingrese el stock del producto: <input id="stock" type="number" name="stock" onchange="habilitarBtn()" required></label>
+                    <label class="formLabel" for="price">Ingrese el precio del producto: <input id="price" type="number" name="price" onchange="habilitarBtn()" required></label>
+                    <label class="formLabel" for="photo">Ingrese la URL con la imagen del producto: <input id="photo" type="text" name="photo" onchange="habilitarBtn()" required></label>
+                </div>
+                <button class="formBtn" id="btnNewProduct" disabled>Enviar</button>
+            </form>
         <%}%>
-        
+            
+            <div class="productsListContainer">
+                <% productsList.forEach((product) => { %>
+                    <div class="producto" id="producto-<%= product.code %>">
+                        <div class="imgContainer">
+                            <img src="<%= product.photo %>" alt='imagen de producto' class="productoImagen">
+                        </div>
+                        <div class="productoTextos">
+                            <p class="productoTitulo"><%= product.title %></p>
+                            <p class="productoDescription"><%= product.description %></p>
+                            <div class="subcontenedorProducto">
+                                <p class="productoStock">Stock: <%= product.stock %> unidades</p>
+                                <p class="productoPrecio">$ <%= product.price %></p>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
     </div>
 
+    <script>
+        const btn = document.getElementById('btnNewProduct');
+        
+        function habilitarBtn() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const stock = document.getElementById('stock').value;
+            const price = document.getElementById('price').value;
+            const photo = document.getElementById('photo').value;
 
-    <script src="js/main.js"></script>
+            if ( title && description && stock && price && photo )
+            {
+                btn.disabled = false
+            }
+            else
+            {
+                btn.disabled = true
+            }
+        }
+    
+    </script>
 
 </body>
 
