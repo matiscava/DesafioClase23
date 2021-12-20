@@ -2,30 +2,31 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Ingreso</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/estilos.css">
+  <title>Formulario de Ingreso</title>
 </head>
 
 <body>
-    <h1>Signup de Usuario</h1>
-    <br>
+  <div class="formContainer">
+    <h1 class="formTitle">Signup de Usuario</h1>
+
     <form action="/signup" method="post" autocomplete="off">
         <div >
-            <label for="username">Ingrese su username</label>
-            <input id="username" type="text" name="username" onchange="habilitarBtn()" required>
-            <label for="email">Ingrese su email</label>
-            <input id="email" type="email" name="email" onchange="habilitarBtn()" required>
-            <label for="password">Ingrese su password</label>
-            <input id="password" type="password" name="password" onchange="habilitarBtn()" required>
-            <label for="rePassword">Repita su password</label>
-            <input id="rePassword" type="password" name="rePassword" onkeyup="habilitarBtn()" required>
+            <label class="formLabel" for="username">Ingrese su username: <input id="username" type="text" name="username" onchange="habilitarBtn()" required></label>
+            <label class="formLabel" for="email">Ingrese su email: <input id="email" type="email" name="email" onchange="habilitarBtn()" required></label>
+            <label class="formLabel" for="password">Ingrese su password: <input id="password" type="password" name="password" onchange="habilitarBtn()" required></label>
+            <label class="formLabel" for="rePassword">Repita su password: <input id="rePassword" type="password" name="rePassword" onkeyup="habilitarBtn()" required></label>
         </div>
-        <button id="btnFormSignup" disabled>Enviar</button>
+        <button class="formBtn" id="btnFormSignup" disabled>Enviar</button>
     </form>
-    <button onclick="location.href='/login'">
-        Loguearse
+    <hr>
+    <button class="btnLink" onclick="location.href='/login'">
+        ir al Login
     </button>
+
+  </div>
     <!-- Inicio del script -->
     <script>
         const btn = document.getElementById('btnFormSignup');

@@ -5,24 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carga de producto</title>
-    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/estilos.css" />
 
 </head>
 <body>
-    <div >
-        <h1>Login de Usuario</h1>
-        <br>
+    <div class="formContainer">
+        <h1 class="formTitle">Login de Usuario</h1>
+
         <form action="/login" method="post" autocomplete="off">
             <div >
-                <label for="username">Ingrese su nombre</label>
-                <input id="username" type="text" name="username" required>
-                <label for="password">Ingrese su password</label>
-                <input id="password" type="password" name="password" required>
-            </div>
-            <button>Enviar</button>
+                <label class="formLabel" for="username">Ingrese su username: <input id="username" type="text" name="username" onchange="habilitarBtn()" required></label>
+                <label class="formLabel" for="password">Ingrese su password: <input id="password" type="password" name="password" onchange="habilitarBtn()" required></label>
+                </div>
+            <button class="formBtn">Enviar</button>
         </form>
-        <button onclick="location.href='/signup'">
-            Registrarse
+        <hr>
+        <button class="btnLink" onclick="location.href='/signup'">
+            ir a Registrarse
         </button>
     </div>
 </body>

@@ -3,3 +3,121 @@
     padding: 0;
     box-sizing: content-box;
 }
+body{
+    background-color: silver;
+}
+
+/* FORM */
+
+.formContainer{
+    background-color: steelblue;
+    border: rgb(57, 113, 158) 3px solid;
+}
+.formTitle{
+    color: #d8e9ae;
+    font-family: sans-serif;
+}
+
+.formLabel{
+    display: block;
+    margin: 5px;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+.formLabel input {
+    margin: 0px;
+    width: 100%;
+}
+.formBtn{
+    display: block;
+    margin: 0 auto;
+    padding: 10px 28px;
+    font-size: 16px;
+    background-color: green ;
+    color: honeydew;
+}
+.formBtn:disabled{
+    cursor:not-allowed;
+    background-color: rgb(224, 35, 35) ;
+}
+
+.btnLink{
+    display: block;
+    margin: 0 auto;
+    padding: 8px 22px;
+    margin-bottom: 10px;
+    border: 3px solid #bba71b;
+    background: #dfce58;
+    cursor: pointer;
+    color: #766b19;
+    transition: 0.5s;
+}
+.btnLink:hover , .btnHome:hover{
+    color: #dfce58;
+    border-color: #dfce58;
+    background: #766b19;
+}
+
+/* FAIL LOGIN */
+
+.contenedorError {
+    background-color: rgb(255 90 90);
+    padding: 20px;
+}
+.errorText {
+    color: white;
+    text-align: center;
+    font-size: 25px;
+    text-transform:uppercase;
+    font-family: sans-serif;
+}
+.errorBtn {
+    display: block;
+    margin: 0 auto;
+    padding: 8px 22px;
+    text-transform:uppercase;
+    text-decoration: none;
+    background-color: wheat;
+    width: fit-content;
+    color: brown;
+    border: 2px brown solid;
+    transition: 0.5s;
+}
+.errorBtn:hover {
+    background-color: rgb(238, 181, 76);
+    color: #b95b5b;
+    border-color: #b95b5b;
+    box-shadow: 0px 0px 9px 4px #c5c75e;
+}
+
+/* HOME */
+
+.unlogContainer{
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    background: #8b1313;
+    color: papayawhip;
+}
+.logContainer{
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    background: #88e68f;
+    color: rgb(60, 112, 36);
+}
+
+.btnContainer{
+    margin-left: auto
+}
+.btnHome{
+    padding: 8px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border: 3px solid #bba71b;
+    background: #dfce58;
+    cursor: pointer;
+    color: #766b19;
+    transition: 0.5s;
+}
+ 
