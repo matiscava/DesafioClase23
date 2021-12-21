@@ -28,7 +28,7 @@ app.use(session({
     cookie: {
         httpOnly: false,
         secure: false,
-        maxAge: 10000
+        maxAge: 600000
     }
 }))
 app.use( passport.initialize() )
