@@ -5,8 +5,13 @@ const bCrypt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+const { Router } = express; 
+const router = Router();
+
 const {usersDao} = require('./daos')
 const {productsDao} = require('./daos')
+
+const randomRoute = require('./routes/randomRoute')
 
 const Products = new productsDao;
 const Users = new usersDao;
@@ -85,7 +90,7 @@ passport.use('signup', new LocalStrategy(
         const idUser = await Users.createUser(newUser)
         console.log('User register succesful iD ',idUser);
         req.session.idMongo = idUser;
-        // res.redirect('/home');
+
         return done( null , idUser)
     }
 ) )
@@ -97,15 +102,9 @@ passport.serializeUser( ( user , done) => {
 passport.deserializeUser( async ( id , done ) => {
 
         const user = await Users.getById(id)
-        // req.session.idMongo = user._id;
+
         return done( null , user._id)
-        // if (user) {
-        //     done()
-        // }
-        // else
-        // {
-        //     console.log('error en deserializeUser');
-        // }
+
     } )
 
 /* ROUTES */
@@ -140,9 +139,23 @@ app.post( '/home', async( req , res ) => {
         data: productId
     };
     console.log(message);
-    // req.session.idMongo = 
     res.redirect('/')
+})
 
+//INFO
+
+app.get( '/info' , ( req , res) => {
+    const info = {
+        in:process.argv,
+        platform: process.platform,
+        version: process.version,
+        memory: process.memoryUsage().rss,
+        pathexec: process.execPath,
+        processId: process.pid,
+        folder: process.cwd()
+    }
+
+    res.render(path.join(process.cwd(), '/views/pages/info.ejs'), {info: info})
 
 })
 
@@ -160,7 +173,6 @@ app.get( '/login' , async ( req , res ) => {
             res.redirect('/')
 
         } else {
-            // res.render('./../views/pages/login.ejs')
             res.render(path.join(process.cwd(), '/views/pages/login.ejs'))
         }
     }
@@ -168,17 +180,7 @@ app.get( '/login' , async ( req , res ) => {
 app.post( '/login' , passport.authenticate('login', {failureRedirect : '/faillogin' }) , async ( req , res ) => {
     const { username , password } = req.body;
     const user = await Users.findUser(username);
-    // if ( !user )
-    // {
-    //     console.log('User Not Found with username ',username);
-    //     let problema = 'user error login: User not found';
-    //     res.render(path.join(process.cwd(), '/views/pages/error.ejs'),{problema: problema, link: '/login'})
-    // }
-    // if ( !isValidPassword( user , password ) ) {
-    //     console.log( 'Invalid Password' );
-    //     let problema = 'user error login: invalid password';
-    //     res.render(path.join(process.cwd(), '/views/pages/error.ejs'),{problema: problema, link: '/login'})
-    // }
+
     req.session.idMongo = user._id;
 
     res.redirect('/home');
@@ -209,36 +211,10 @@ app.get('/logout', async ( req , res ) => {
 //signup
 
 app.get( '/signup' , async ( req , res ) => {
-
-    // const idMongo = req.session && req.session.idMongo;
-    // const usuario = await Users.getById(idMongo);
-
-    // if (usuario) {
-    //     res.redirect('/')
-    // } else {
-        // res.render('./../views/pages/login.ejs')
-        res.render(path.join(process.cwd(), '/views/pages/signup.ejs'))
-    // }
+    res.render(path.join(process.cwd(), '/views/pages/signup.ejs'))
+ 
 })
 app.post( '/signup' , passport.authenticate( 'signup' , {failureRedirect: '/failsignup'} ) , async ( req , res ) => {
-    // const { username , password , email } = req.body;
-    // const oldUser = await Users.findUser(username);
-    // if (oldUser)
-    // {
-    //     console.log('User already exists');
-    //     let problema = 'user error signup: user already exists';
-    //     res.render(path.join(process.cwd(), '/views/pages/error.ejs'),{problema: problema, link: '/signup'})
-    // }else{
-    //     const newUser = {
-    //         username: username,
-    //         password: createHash(password),
-    //         email: email
-    //     }
-    //     const idUser = await Users.createUser(newUser)
-    //     console.log('User register succesful iD ',idUser);
-    //     req.session.idMongo = idUser;
-    //     res.redirect('/home');
-    // }
     const user = req.user;
     if ( user) res.redirect('/home')
     else {
@@ -249,6 +225,9 @@ app.post( '/signup' , passport.authenticate( 'signup' , {failureRedirect: '/fail
 app.get( '/failsignup' , (req , res) => {
     res.render(path.join(process.cwd(), '/views/pages/failsignup.ejs'))
 } )
+
+app.use('/api/randoms', randomRoute)
+
 const PORT = process.env.port || 8050;
 
 app.listen(PORT, ()=>{
