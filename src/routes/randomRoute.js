@@ -12,14 +12,12 @@ randomRoute.get('/' , (req , res) => {
     if (!cantidad || isNaN(cantidad)) {
         cantidad = 1000000000;
     }
-    console.log(cantidad);
-    const objeto = fork('./../utils/calcRandomNumbers')
-    objeto.send('Inicio del conteo...');
+    const objeto = fork('./src/utils/calcRandomNumbers')
+    objeto.send(cantidad);
     objeto.on('message', numeros => {
-        res.json(numeros)
+        res.send(numeros)
     })
 
-    res.json(objeto);
 })
 
 module.exports = randomRoute;

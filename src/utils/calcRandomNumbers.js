@@ -1,3 +1,5 @@
+const req = require("express/lib/request");
+
 const calcRandomNumbers = (numero) => {
     let objeto = [];
     for( let i=0; i<numero;i++){
@@ -21,8 +23,9 @@ const calcRandomNumbers = (numero) => {
 }
 
 process.on('message', msg => {
-    const objeto = calcRandomNumbers(numero);
+    const cantidad = parseInt(msg)
+    const objeto = calcRandomNumbers(cantidad);
     process.send(objeto)
 })
 
-// module.exports = calcRandomNumbers;
+module.exports = calcRandomNumbers;

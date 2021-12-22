@@ -115,7 +115,6 @@ app.get( '/' , ( req , res ) => {
 
 app.get('/home', async ( req , res ) => {
     const idMongo = req.session && req.session.idMongo;
-    console.log('prueba',idMongo);
     const usuario = await Users.getById(idMongo);
     const productsList = await Products.getAll();
 
@@ -128,12 +127,9 @@ app.post( '/home', async( req , res ) => {
 
     const user = req.user;
 
-    console.log('prueba post',idMongo);
-    console.log('prueba post dos',user);
-
     const newProduct = req.body;
     const productId = await Products.createProduct(newProduct)
-    console.log(productId);
+
     const message = {
         message: 'Se ha cargado un nuevo producto',
         data: productId
